@@ -1,0 +1,180 @@
+import board
+import neopixel
+import time
+from digitalio import DigitalInOut, Direction, Pull
+
+pixpin = board.D0
+piezo = DigitalInOut(board.D2)
+numpix = 200
+b = 0.1
+piezo.direction = Direction.INPUT
+piezo.pull = Pull.UP
+
+strip = neopixel.NeoPixel(pixpin, numpix, brightness = b, auto_write = False)
+
+def wheel(pos):
+    # Input a value 0 to 255 to get a color value.
+    # The colours are a transition r - g - b - back to r.
+    if (pos < 0) or (pos > 255):
+        return (0, 0, 0)
+    if (pos < 85):
+        return (int(pos * 3), int(255 - (pos*3)), 0)
+    elif (pos < 170):
+        pos -= 85
+        return (int(255 - pos*3), 0, int(pos*3))
+    else:
+        pos -= 170
+        return (0, int(pos*3), int(255 - pos*3))
+ 
+def rainbow_cycle(wait):
+    for j in range(255):
+        for i in range(len(strip)):
+            idx = int ((i * 256 / len(strip)) + j)
+            strip[i] = wheel(idx & 255)
+        strip.write()
+        time.sleep(wait)
+
+def colorWipe(color, wait):
+    for j in range(len(strip)):
+        strip[j] = (color)
+        strip.write()
+        time.sleep(wait)
+
+def genericXmas():
+
+    strip.fill((255, 0, 0))
+    strip.write()
+    time.sleep(5)
+    clear(5)
+
+    strip.fill((0, 0, 255))
+    strip.write()
+    time.sleep(5)
+    clear(7)
+
+    strip.fill((0, 255, 0))
+    strip.write()
+    time.sleep(5)
+    clear(0.5)
+
+def comeHere():
+    colorWipe((127, 0, 255), .1)
+    strip.fill((127, 0, 255))
+    strip.write()
+    time.sleep(5)
+
+    clear(10)
+
+    strip.fill((0, 255, 0))
+    strip.write()
+    time.sleep(10)
+
+def glitch():
+
+        strip.fill((255, 255, 255))
+        strip.write()
+        time.sleep(0.05)
+
+        clear(0.7)
+
+        strip[102] = (0, 255, 0)
+        strip.write()
+        time.sleep(0.02)
+
+        clear(0.1)
+
+        strip[63] = (0, 0, 255)
+        strip.write()
+        time.sleep(0.08)
+
+        clear(0.005)
+
+        strip[182] = (127, 0, 255)
+        strip.write()
+        time.sleep(0.03)
+
+        clear(0.001)
+
+        strip[49] = (127, 255, 0)
+        strip.write()
+        time.sleep(0.005)
+
+        clear(0.2)
+
+        strip[111] = (255, 0, 255)
+        strip.write()
+        time.sleep(0.1)
+
+        clear(0.006)
+
+        strip[54] = (127, 0, 255)
+        strip.write()
+        time.sleep(0.008)
+
+        clear(0.05)
+
+        strip[27] = (255, 0, 0)
+        strip.write()
+        time.sleep(0.4)
+
+        clear(0.009)
+
+        strip[143] = (0, 0, 255)
+        strip.write()
+        time.sleep(0.007)
+
+        clear(0.1)
+
+        strip.fill((0, 255, 0))
+        strip.write()
+        time.sleep(0.05)
+
+        clear(0.05)
+
+        strip.fill((0, 0, 255))
+        strip.write()
+        time.sleep(0.05)
+
+        clear(0.05)
+
+        strip.fill((255, 0, 0))
+        strip.write()
+        time.sleep(0.05)
+
+        clear(0.02)
+
+        strip.fill((255, 255, 255))
+        strip.write()
+        time.sleep(0.02)
+
+        clear(0.005)
+
+        strip.fill((255, 255, 255))
+        strip.write()
+        time.sleep(0.02)
+
+        clear(0.005)
+
+        strip.fill((255, 255, 255))
+        strip.write()
+        time.sleep(2)
+
+        clear(5)
+
+def clear(wait):
+    strip.fill((0, 0, 0))
+    strip.write()
+    time.sleep(wait)
+
+while True:
+
+    if not piezo.value:
+
+        comeHere()
+        clear(3)
+        glitch()
+        clear(1)
+        genericXmas()
+        clear(10)
+        glitch()
+        clear(1)
